@@ -1,7 +1,0 @@
-export default function Home() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>Welcome to My Next.js App</h1>
-    </div>
-  );
-}
