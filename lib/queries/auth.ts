@@ -13,9 +13,6 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const { data } = await apiClient.post("/auth/login", values);
-      // Cookies are already set by the backend response.
-      // Body still includes accessToken once — decode it here only to
-      // populate client-side user state, then it's never stored.
       return data.data as { accessToken: string; refreshToken: string };
     },
     onSuccess: (data) => {
