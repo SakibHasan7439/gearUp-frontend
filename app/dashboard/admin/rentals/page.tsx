@@ -16,7 +16,10 @@ export default function AdminRentalsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-bold">All rentals</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">All Rentals</h1>
+        <p className="text-sm text-gray-500">Platform-wide rental orders monitoring</p>
+      </div>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -25,29 +28,31 @@ export default function AdminRentalsPage() {
           ))}
         </div>
       ) : rentals && rentals.length > 0 ? (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Items</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Customer ID</TableHead>
+                <TableHead>Items Count</TableHead>
+                <TableHead>Total Amount</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>Created Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rentals.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-mono text-xs">
+                  <TableCell className="font-mono text-xs font-medium">
                     #{order.id.slice(0, 8)}
                   </TableCell>
-                  <TableCell className="font-mono text-xs">
+                  <TableCell className="font-mono text-xs text-gray-600">
                     {order.customerId.slice(0, 8)}…
                   </TableCell>
                   <TableCell>{order.items?.length ?? 0}</TableCell>
-                  <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
+                  <TableCell className="font-semibold">
+                    ${order.totalAmount.toFixed(2)}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={order.status} />
                   </TableCell>
@@ -60,7 +65,9 @@ export default function AdminRentalsPage() {
           </Table>
         </div>
       ) : (
-        <p className="text-gray-500">No rentals on the platform.</p>
+        <div className="rounded-lg border p-8 text-center text-gray-500">
+          No rental orders found on the platform.
+        </div>
       )}
     </div>
   );

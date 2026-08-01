@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
 import { Category, GearItem, RentalOrder } from "@/types";
 import { toast } from "sonner";
+import { CategoryFormValues } from "../validators/category";
 
 // ---- Categories ----
 
@@ -16,15 +17,14 @@ export function useAdminCategories() {
 }
 
 export function useCreateCategory() {
-  const qc = useQueryClient();
+  const queryClient  = useQueryClient();
   return useMutation({
-    mutationFn: async (values: { name: string; slug: string }) => {
+    mutationFn: async (values: CategoryFormValues) => {
       const { data } = await apiClient.post("/admin/categories", values);
       return data.data as Category;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "categories"] });
-      qc.invalidateQueries({ queryKey: ["categories"] });
+      queryClient .invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category created");
     },
     onError: (err: any) => {
@@ -34,12 +34,9 @@ export function useCreateCategory() {
 }
 
 export function useUpdateCategory() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      id,
-      ...values
-    }: { id: string; name: string; slug: string }) => {
+    mutationFn: async ({ id, ...values }: { id: string } & Partial<CategoryFormValues>) => {
       const { data } = await apiClient.patch(
         `/admin/categories/${id}`,
         values,
@@ -47,8 +44,7 @@ export function useUpdateCategory() {
       return data.data as Category;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "categories"] });
-      qc.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category updated");
     },
     onError: (err: any) => {
@@ -58,14 +54,13 @@ export function useUpdateCategory() {
 }
 
 export function useDeleteCategory() {
-  const qc = useQueryClient();
+  const queryClient  = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
       await apiClient.delete(`/admin/categories/${id}`);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "categories"] });
-      qc.invalidateQueries({ queryKey: ["categories"] });
+      queryClient .invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category deleted");
     },
     onError: (err: any) => {

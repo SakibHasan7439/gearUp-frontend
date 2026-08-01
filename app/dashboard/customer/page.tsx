@@ -46,7 +46,7 @@ export default function CustomerDashboardPage() {
               className="flex items-center justify-between rounded-lg border p-4"
             >
               <Link
-                href={`/dashboard/customer/orders/${order.id}`}
+                href={`/rentals/${order.id}`}
                 className="flex-1"
               >
                 <div className="mb-1 flex items-center gap-3">
@@ -72,7 +72,7 @@ export default function CustomerDashboardPage() {
 
                 {order.status === "RETURNED" && (
                   <Link
-                    href={`/dashboard/customer/orders/${order.id}`}
+                    href={`/rentals/${order.id}`}
                     className="rounded bg-gray-100 px-3 py-1.5 text-sm transition-colors hover:bg-gray-200"
                   >
                     Leave Review

@@ -1,11 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGearItem } from "@/lib/queries/gear";
 import { useGearReviews } from "@/lib/queries/reviews";
-import { rentalSchema, RentalFormValues } from "@/lib/validators/rental";
+import { useCreateRental, useCreatePaymentSession } from "@/lib/queries/rentals";
+import { rentGearSchema, RentGearFormValues } from "@/lib/validators/rental";
 import { Review } from "@/types";
 
 function today() {
@@ -14,21 +16,63 @@ function today() {
 
 export default function GearDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { data: gear, isLoading } = useGearItem(id);
   const { data: reviews } = useGearReviews(id);
+
+  const { mutate: createRental, isPending: isCreating } = useCreateRental();
+  const { mutate: createPayment, isPending: isPaying } = useCreatePaymentSession();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     watch,
-  } = useForm<RentalFormValues>({
-    resolver: zodResolver(rentalSchema),
-    defaultValues: { quantity: 1 },
+  } = useForm<RentGearFormValues>({
+    resolver: zodResolver(rentGearSchema),
+    defaultValues: {
+      gearItemId: id ?? "",
+      quantity: 1,
+    },
   });
+
+  useEffect(() => {
+    if (id) {
+      setValue("gearItemId", id);
+    }
+  }, [id, setValue]);
 
   const inStock = gear ? gear.availableQuantity > 0 : false;
   const watchQuantity = watch("quantity");
+  const isSubmitting = isCreating || isPaying;
+
+  const onSubmit = (values: RentGearFormValues) => {
+    createRental(
+      {
+        items: [
+          {
+            gearItemId: values.gearItemId || id,
+            quantity: values.quantity,
+            startDate: values.startDate,
+            endDate: values.endDate,
+          },
+        ],
+      },
+      {
+        onSuccess: (order) => {
+          createPayment(order.id, {
+            onSuccess: (data) => {
+              window.location.href = data.url;
+            },
+            onError: () => {
+              router.push(`/rentals/${order.id}`);
+            },
+          });
+        },
+      },
+    );
+  };
 
   if (isLoading) {
     return (
@@ -81,11 +125,11 @@ export default function GearDetailPage() {
         <section className="mb-10 rounded-lg border p-6">
           <h2 className="mb-4 text-xl font-semibold">Rent now</h2>
           <form
-            onSubmit={handleSubmit(() => {
-              // rental submit handled by parent
-            })}
+            onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 sm:flex-row sm:items-end"
           >
+            <input type="hidden" {...register("gearItemId")} />
+
             <div>
               <label className="mb-1 block text-sm font-medium">
                 Start date
@@ -136,9 +180,10 @@ export default function GearDetailPage() {
 
             <button
               type="submit"
-              className="rounded bg-black px-6 py-2 text-white transition-opacity hover:opacity-80"
+              disabled={isSubmitting}
+              className="rounded bg-black px-6 py-2 text-white transition-opacity hover:opacity-80 disabled:opacity-50"
             >
-              Rent
+              {isSubmitting ? "Processing…" : "Rent"}
             </button>
           </form>
 

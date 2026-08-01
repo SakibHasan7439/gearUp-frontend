@@ -16,7 +16,10 @@ export default function AdminGearPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-bold">All gear</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">All Gear</h1>
+        <p className="text-sm text-gray-500">Platform-wide gear listings moderation overview</p>
+      </div>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -25,16 +28,16 @@ export default function AdminGearPage() {
           ))}
         </div>
       ) : gear && gear.length > 0 ? (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Brand</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Provider</TableHead>
+                <TableHead>Provider ID</TableHead>
                 <TableHead>Price/day</TableHead>
-                <TableHead>Available</TableHead>
+                <TableHead>Availability</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -43,7 +46,7 @@ export default function AdminGearPage() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.brand}</TableCell>
                   <TableCell>{item.category?.name ?? "—"}</TableCell>
-                  <TableCell className="font-mono text-xs">
+                  <TableCell className="font-mono text-xs text-gray-600">
                     {item.userId.slice(0, 8)}…
                   </TableCell>
                   <TableCell>${item.price.toFixed(2)}</TableCell>
@@ -62,7 +65,9 @@ export default function AdminGearPage() {
           </Table>
         </div>
       ) : (
-        <p className="text-gray-500">No gear on the platform.</p>
+        <div className="rounded-lg border p-8 text-center text-gray-500">
+          No gear items found on the platform.
+        </div>
       )}
     </div>
   );

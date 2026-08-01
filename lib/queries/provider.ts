@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
 import { GearItem, RentalOrder } from "@/types";
 import { toast } from "sonner";
+import { RentGearFormValues } from "../validators/gear";
 
 // ---- Gear ----
 
@@ -16,14 +17,14 @@ export function useMyGear() {
 }
 
 export function useCreateGear() {
-  const qc = useQueryClient();
+  const queryClient  = useQueryClient();
   return useMutation({
-    mutationFn: async (values: Omit<GearItem, "id" | "userId" | "createdAt" | "updatedAt" | "availableQuantity" | "category"> & { categoryId: string }) => {
+    mutationFn: async(values: RentGearFormValues) => {
       const { data } = await apiClient.post("/provider/gear", values);
       return data.data as GearItem;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["provider", "gear"] });
+      queryClient .invalidateQueries({ queryKey: ["provider", "gear"] });
       toast.success("Gear created");
     },
     onError: (err: any) => {
@@ -32,19 +33,16 @@ export function useCreateGear() {
   });
 }
 
-export function useUpdateGear() {
-  const qc = useQueryClient();
+export function useUpdateGear(id: string) {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      id,
-      ...values
-    }: Partial<Omit<GearItem, "id" | "userId" | "createdAt" | "updatedAt" | "availableQuantity" | "category">> & { id: string; categoryId?: string }) => {
-      const { data } = await apiClient.patch(`/provider/gear/${id}`, values);
-      return data.data as GearItem;
-    },
+   mutationFn: async(values: Partial<RentGearFormValues>) => {
+    const { data } = await apiClient.patch(`/provider/gear/${id}`, values);
+    return data.data as GearItem;
+   },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["provider", "gear"] });
-      toast.success("Gear updated");
+      queryClient.invalidateQueries({ queryKey: ["provider", "gear"] });
+      toast.success("Gear updated successfully");
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message ?? "Failed to update gear");
@@ -53,13 +51,13 @@ export function useUpdateGear() {
 }
 
 export function useDeleteGear() {
-  const qc = useQueryClient();
+  const queryClient  = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
       await apiClient.delete(`/provider/gear/${id}`);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["provider", "gear"] });
+      queryClient .invalidateQueries({ queryKey: ["provider", "gear"] });
       toast.success("Gear deleted");
     },
     onError: (err: any) => {
@@ -80,23 +78,23 @@ export function useProviderOrders() {
   });
 }
 
-const nextStatus: Record<string, { label: string; status: string }> = {
-  PENDING: { label: "Confirm", status: "CONFIRMED" },
-  CONFIRMED: { label: "Mark Picked Up", status: "PICKED_UP" },
-  PICKED_UP: { label: "Mark Returned", status: "RETURNED" },
-};
+// const nextStatus: Record<string, { label: string; status: string }> = {
+//   PENDING: { label: "Confirm", status: "CONFIRMED" },
+//   CONFIRMED: { label: "Mark Picked Up", status: "PICKED_UP" },
+//   PICKED_UP: { label: "Mark Returned", status: "RETURNED" },
+// };
 
-export { nextStatus };
+// export { nextStatus };
 
 export function useUpdateOrderStatus() {
-  const qc = useQueryClient();
+  const queryClient  = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { data } = await apiClient.patch(`/provider/orders/${id}`, { status });
-      return data;
+      return data.data as RentalOrder;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["provider", "orders"] });
+      queryClient .invalidateQueries({ queryKey: ["provider", "orders"] });
       toast.success("Order status updated");
     },
     onError: (err: any) => {
