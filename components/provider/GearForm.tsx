@@ -54,6 +54,7 @@ export default function GearForm({
       description: "",
       categoryId: "",
       totalQuantity: 1,
+      availableQuantity: 1,
       ...defaultValues,
     },
   });
@@ -67,6 +68,7 @@ export default function GearForm({
         description: defaultValues.description ?? "",
         categoryId: defaultValues.categoryId ?? "",
         totalQuantity: defaultValues.totalQuantity ?? 1,
+        availableQuantity: defaultValues.availableQuantity ?? 1,
       });
     }
   }, [defaultValues, reset]);
@@ -124,10 +126,9 @@ export default function GearForm({
 
         <FormField label="Category" error={errors.categoryId?.message}>
           <Select
+            items={categories?.map((c) => ({ value: c.id, label: c.name })) ?? []}
             value={selectedCategoryId || ""}
-            onValueChange={(val: string) =>
-              setValue("categoryId", val, { shouldValidate: true })
-            }
+            onValueChange={(val: string) => setValue("categoryId", val, { shouldValidate: true })}
           >
             <SelectTrigger className="rounded-none border-[#4E5D5A]/40 bg-transparent">
               <SelectValue
@@ -159,6 +160,25 @@ export default function GearForm({
             {...register("totalQuantity", { valueAsNumber: true })}
           />
         </FormField>
+        <FormField
+          label="Available Quantity"
+          htmlFor="availableQuantity"
+          error={errors.availableQuantity?.message}
+        >
+          <Input
+            id="availableQuantity"
+            type="number"
+            min={1}
+            className={cn(formInputClass, "font-mono")}
+            {...register("availableQuantity", { valueAsNumber: true })}
+          />
+        </FormField>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-[#4E5D5A]">
+            Note: Available quantity cannot exceed total quantity.
+          </p>
+        </div>
 
         <Button type="submit" disabled={isPending} className="mt-2 w-full sm:w-auto">
           {isPending ? "Submitting…" : submitLabel}

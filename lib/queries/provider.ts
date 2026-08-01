@@ -37,7 +37,7 @@ export function useUpdateGear(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
    mutationFn: async(values: Partial<RentGearFormValues>) => {
-    const { data } = await apiClient.patch(`/provider/gear/${id}`, values);
+    const { data } = await apiClient.put(`/provider/gear/${id}`, values);
     return data.data as GearItem;
    },
     onSuccess: () => {

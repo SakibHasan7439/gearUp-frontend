@@ -49,6 +49,7 @@ export default function EditGearPage() {
           description: item.description,
           categoryId: item.categoryId,
           totalQuantity: item.totalQuantity,
+          availableQuantity: item.availableQuantity,
         }}
         onSubmit={handleSubmit}
         isPending={isPending}
