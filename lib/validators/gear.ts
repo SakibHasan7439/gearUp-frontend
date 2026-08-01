@@ -11,6 +11,6 @@ export const gearFormSchema = z.object({
 }).refine((data) => data.availableQuantity <= data.totalQuantity, {
     message: "Available quantity cannot exceed total quantity",
     path: ["availableQuantity"],
-  });;
+  });
 
 export type RentGearFormValues = z.infer<typeof gearFormSchema>;

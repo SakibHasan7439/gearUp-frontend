@@ -124,7 +124,7 @@ export default function DashboardSidebar() {
                         active && navButtonActiveClass,
                       )}
                     >
-                      <Link href={item.href}>
+                      <Link href={item.href} className="flex items-center gap-3">
                         <Icon className="size-4 shrink-0 text-[#B8823A]" />
                         <span>{item.label}</span>
                       </Link>
@@ -144,7 +144,7 @@ export default function DashboardSidebar() {
               asChild
               className={cn(navButtonClass, "h-10")}
             >
-              <Link href="/gear">
+              <Link href="/gear" className="flex items-center gap-3">
                 <CompassIcon className="size-4 shrink-0 text-[#B8823A]" />
                 <span>Browse Gear</span>
               </Link>
