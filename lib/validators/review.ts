@@ -6,7 +6,7 @@ export const reviewSchema = z.object({
     .int()
     .min(1, "Rating must be at least 1")
     .max(5, "Rating must be at most 5"),
-  comment: z.string().min(1, "Comment is required"),
+  comment: z.string().min(3, "Comment must be at least 3 characters"),
 });
 
 export type ReviewFormValues = z.infer<typeof reviewSchema>;

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useGearList, useCategories } from "@/lib/queries/gear";
+import { useGearList } from "@/lib/queries/gear";
 import GearCard from "@/components/shared/GearCard";
+import { useCategories } from "@/lib/queries/categories";
 
 export default function GearBrowsePage() {
   const { data: gear, isLoading } = useGearList();

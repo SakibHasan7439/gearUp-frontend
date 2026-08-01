@@ -1,12 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
-import { GearItem, Category } from "@/types";
+import { GearItem, Category, Review } from "@/types";
 
-export function useGearList() {
+export interface GearFilters {
+  categoryId?: string;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export function useGearList(filters?: GearFilters) {
   return useQuery({
-    queryKey: ["gear"],
+    queryKey: ["gear", filters],
     queryFn: async () => {
-      const { data } = await apiClient.get("/gear");
+      const { data } = await apiClient.get("/gear", { params: filters });
       return data.data as GearItem[];
     },
   });
@@ -16,19 +23,21 @@ export function useGearItem(id: string) {
   return useQuery({
     queryKey: ["gear", id],
     queryFn: async () => {
-      const { data } = await apiClient.get(`/gear/${id}`);
+      const {data} = await apiClient.get(`/gear/${id}`);
       return data.data as GearItem;
     },
     enabled: !!id,
-  });
+  })
 }
 
-export function useCategories() {
+
+export function useGearReviews(gearItemId: string) {
   return useQuery({
-    queryKey: ["categories"],
+    queryKey: ["gear", gearItemId, "reviews"],
     queryFn: async () => {
-      const { data } = await apiClient.get("/categories");
-      return data.data as Category[];
+      const { data } = await apiClient.get(`/gear/${gearItemId}/reviews`);
+      return data.data as Review[];
     },
-  });
+    enabled: !!gearItemId,
+  })
 }

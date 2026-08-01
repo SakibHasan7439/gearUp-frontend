@@ -3,9 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { gearSchema, GearFormValues } from "@/lib/validators/gear";
+import { gearSchema, RentGearFormValues } from "@/lib/validators/gear";
 import { useCreateGear } from "@/lib/queries/provider";
-import { useCategories } from "@/lib/queries/gear";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCategories } from "@/lib/queries/categories";
 
 export default function NewGearPage() {
   const router = useRouter();
@@ -28,11 +28,11 @@ export default function NewGearPage() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<GearFormValues>({
+  } = useForm<RentGearFormValues>({
     resolver: zodResolver(gearSchema),
   });
 
-  const onSubmit = (values: GearFormValues) => {
+  const onSubmit = (values: RentGearFormValues) => {
     mutate(values, { onSuccess: () => router.push("/dashboard/provider/gear") });
   };
 

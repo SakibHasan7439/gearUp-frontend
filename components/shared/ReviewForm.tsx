@@ -5,7 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewSchema, ReviewFormValues } from "@/lib/validators/review";
 import { useCreateReview } from "@/lib/queries/reviews";
 
-export default function ReviewForm({ gearItemId }: { gearItemId: string }) {
+export default function ReviewForm({
+  gearItemId,
+  onSubmitted,
+}: {
+  gearItemId: string;
+  onSubmitted?: () => void;
+}) {
   const { mutate, isPending } = useCreateReview();
 
   const {
@@ -20,7 +26,12 @@ export default function ReviewForm({ gearItemId }: { gearItemId: string }) {
   const onSubmit = (values: ReviewFormValues) => {
     mutate(
       { gearItemId, ...values },
-      { onSuccess: () => reset() },
+      {
+        onSuccess: () => {
+          reset();
+          onSubmitted?.();
+        },
+      },
     );
   };
 
