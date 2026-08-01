@@ -2,11 +2,12 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useRentalDetails, useCreatePaymentSession } from "@/lib/queries/rentals";
+import { useRentalDetails } from "@/lib/queries/rentals";
 import StatusBadge from "@/components/shared/StatusBadge";
 import ReviewModal from "@/components/shared/ReviewModal";
 import { Payment } from "@/types";
 import { Button } from "@/components/ui/button";
+import { useCreatePayment } from "@/lib/queries/payment";
 
 export default function RentalDetailPage() {
   const params = useParams<{ id: string }>();
@@ -16,13 +17,13 @@ export default function RentalDetailPage() {
 
   const pollForUpdate = success === "true";
   const { data: order, isLoading } = useRentalDetails(id, pollForUpdate);
-  const { mutate: pay, isPending: isPayPending } = useCreatePaymentSession();
+  const { mutate: pay, isPending } = useCreatePayment();
 
   const handlePay = () => {
     if (!id) return;
     pay(id, {
       onSuccess: (data) => {
-        window.location.href = data.url;
+        window.location.href = data.paymentUrl;
       },
     });
   };
@@ -46,9 +47,9 @@ export default function RentalDetailPage() {
     );
   }
 
-  const completedPayment = order.payments?.find(
-    (p: Payment) => p.status === "COMPLETED",
-  );
+  console.log(order)
+
+  const completedPayment = order.status === "CONFIRMED";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -74,9 +75,9 @@ export default function RentalDetailPage() {
           <Button
             size="sm"
             onClick={handlePay}
-            disabled={isPayPending}
+            disabled={isPending}
           >
-            {isPayPending ? "Redirecting…" : "Retry Payment"}
+            {isPending ? "Redirecting…" : "Retry Payment"}
           </Button>
         </div>
       )}
@@ -118,7 +119,7 @@ export default function RentalDetailPage() {
           <p className="font-mono text-sm font-semibold mt-1">
             {completedPayment ? (
               <span className="text-[#2F4A34]">
-                Paid on {completedPayment.paidAt ? new Date(completedPayment.paidAt).toLocaleDateString() : "—"}
+                Paid on {order?.updatedAt ? new Date(order?.updatedAt).toLocaleDateString() : "—"}
               </span>
             ) : order.status === "CANCELLED" ? (
               <span className="text-[#4E5D5A]">Cancelled</span>
@@ -131,8 +132,8 @@ export default function RentalDetailPage() {
 
       {!completedPayment && order.status !== "CANCELLED" && success !== "false" && (
         <div className="mb-8 flex justify-end">
-          <Button onClick={handlePay} disabled={isPayPending}>
-            {isPayPending ? "Redirecting…" : "Pay Now"}
+          <Button onClick={handlePay} disabled={isPending}>
+            {isPending ? "Redirecting…" : "Pay Now"}
           </Button>
         </div>
       )}

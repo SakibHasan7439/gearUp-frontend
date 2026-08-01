@@ -1,6 +1,6 @@
 "use client";
 
-import { useMyRentals, useCreatePaymentSession } from "@/lib/queries/rentals";
+import { useMyRentals } from "@/lib/queries/rentals";
 import StatusBadge from "@/components/shared/StatusBadge";
 import PageHeader from "@/components/shared/PageHeader";
 import TableWrapper from "@/components/shared/TableWrapper";
@@ -14,15 +14,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useCreatePayment } from "@/lib/queries/payment";
 
 export default function CustomerDashboardPage() {
   const { data: rentals, isLoading } = useMyRentals();
-  const { mutate: pay, isPending } = useCreatePaymentSession();
+  const { mutate: pay, isPending } = useCreatePayment();
 
   const handlePay = (rentalId: string) => {
     pay(rentalId, {
       onSuccess: (data) => {
-        window.location.href = data.url;
+        window.location.href = data.paymentUrl;
       },
     });
   };
@@ -94,8 +95,8 @@ export default function CustomerDashboardPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      {hasPendingPayment(order) &&
-                        order.status !== "CANCELLED" && (
+                      {
+                        order.status === "PENDING" && (
                           <Button
                             size="sm"
                             onClick={() => handlePay(order.id)}

@@ -68,11 +68,11 @@ export function useRentalOrder(id: string) {
   });
 }
 
-export function useCreatePaymentSession() {
-  return useMutation({
-    mutationFn: async (rentalOrderId: string) => {
-      const { data } = await apiClient.post(`/rentals/${rentalOrderId}/pay`);
-      return data.data as { url: string };
-    },
-  });
-}
+// export function useCreatePaymentSession() {
+//   return useMutation({
+//     mutationFn: async (rentalOrderId: string) => {
+//       const { data } = await apiClient.post(`/rentals/${rentalOrderId}/pay`);
+//       return data.data as { url: string };
+//     },
+//   });
+// }

@@ -6,12 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGearItem } from "@/lib/queries/gear";
 import { useGearReviews } from "@/lib/queries/reviews";
-import { useCreateRental, useCreatePaymentSession } from "@/lib/queries/rentals";
+import { useCreateRental } from "@/lib/queries/rentals";
 import { rentGearSchema, RentGearFormValues } from "@/lib/validators/rental";
 import { Review } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreatePayment } from "@/lib/queries/payment";
 
 function today() {
   return new Date().toISOString().split("T")[0];
@@ -24,7 +25,7 @@ export default function GearDetailPage() {
   const { data: reviews } = useGearReviews(id);
 
   const { mutate: createRental, isPending: isCreating } = useCreateRental();
-  const { mutate: createPayment, isPending: isPaying } = useCreatePaymentSession();
+  const { mutate: pay, isPending } = useCreatePayment();
 
   const {
     register,
@@ -48,7 +49,7 @@ export default function GearDetailPage() {
 
   const inStock = gear ? gear.availableQuantity > 0 : false;
   const watchQuantity = watch("quantity");
-  const isSubmitting = isCreating || isPaying;
+  const isSubmitting = isCreating || isPending;
 
   const onSubmit = (values: RentGearFormValues) => {
     createRental(
@@ -64,9 +65,9 @@ export default function GearDetailPage() {
       },
       {
         onSuccess: (order) => {
-          createPayment(order.id, {
+          pay(order.id, {
             onSuccess: (data) => {
-              window.location.href = data.url;
+              window.location.href = data.paymentUrl;
             },
             onError: () => {
               router.push(`/rentals/${order.id}`);

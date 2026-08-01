@@ -1,7 +1,7 @@
 export type Role = "CUSTOMER" | "ADMIN" | "PROVIDER";
 export type RentalStatus = "PENDING" | "CONFIRMED" | "PICKED_UP" | "RETURNED" | "CANCELLED";
 export type PaymentMethod = "STRIPE";
-export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED";
+export type PaymentStatus = "PENDING" | "CONFIRMED" | "FAILED";
 
 export interface User {
   id: string;
