@@ -4,6 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewSchema, ReviewFormValues } from "@/lib/validators/review";
 import { useCreateReview } from "@/lib/queries/reviews";
+import { Button } from "@/components/ui/button";
+import {
+  FormField,
+  formTextareaClass,
+} from "@/components/shared/FormField";
+import { cn } from "@/lib/utils";
 
 export default function ReviewForm({
   gearItemId,
@@ -18,10 +24,13 @@ export default function ReviewForm({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
   });
+
+  const selectedRating = watch("rating");
 
   const onSubmit = (values: ReviewFormValues) => {
     mutate(
@@ -36,10 +45,9 @@ export default function ReviewForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <div>
-        <label className="mb-1 block text-sm font-medium">Rating</label>
-        <div className="flex gap-1">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <FormField label="Rating" error={errors.rating?.message}>
+        <div className="flex gap-2">
           {[1, 2, 3, 4, 5].map((star) => (
             <label key={star} className="cursor-pointer">
               <input
@@ -48,34 +56,33 @@ export default function ReviewForm({
                 {...register("rating", { valueAsNumber: true })}
                 className="sr-only"
               />
-              <span className="text-xl text-yellow-500">★</span>
+              <span
+                className={cn(
+                  "text-2xl transition-colors",
+                  selectedRating && star <= selectedRating
+                    ? "text-[#B8823A]"
+                    : "text-[#4E5D5A]/30 hover:text-[#B8823A]/60",
+                )}
+              >
+                ★
+              </span>
             </label>
           ))}
         </div>
-        {errors.rating && (
-          <p className="mt-1 text-sm text-red-500">{errors.rating.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      <div>
+      <FormField label="Comment" error={errors.comment?.message}>
         <textarea
           {...register("comment")}
           placeholder="Write your review…"
-          rows={3}
-          className="w-full rounded border px-3 py-2"
+          rows={4}
+          className={formTextareaClass}
         />
-        {errors.comment && (
-          <p className="mt-1 text-sm text-red-500">{errors.comment.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
-      >
-        {isPending ? "Submitting…" : "Submit review"}
-      </button>
+      <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
+        {isPending ? "Submitting…" : "Submit Review"}
+      </Button>
     </form>
   );
 }

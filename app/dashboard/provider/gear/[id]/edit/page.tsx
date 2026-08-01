@@ -25,20 +25,20 @@ export default function EditGearPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-10">
-        <div className="h-64 animate-pulse rounded-xl bg-gray-200" />
+      <div className="w-full">
+        <div className="h-64 max-w-2xl animate-pulse bg-[#4E5D5A]/10" />
       </div>
     );
   }
 
   if (!item) {
     return (
-      <div className="py-20 text-center text-gray-500">Gear item not found.</div>
+      <div className="py-20 text-center text-[#4E5D5A]">Gear item not found.</div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
+    <div className="w-full">
       <GearForm
         title={`Edit ${item.name}`}
         submitLabel="Save Changes"

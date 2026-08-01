@@ -6,6 +6,8 @@ import { useMyGear, useDeleteGear } from "@/lib/queries/provider";
 import { GearItem } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PageHeader from "@/components/shared/PageHeader";
+import TableWrapper from "@/components/shared/TableWrapper";
 import {
   Table,
   TableBody,
@@ -39,28 +41,28 @@ export default function ProviderGearPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">My Gear</h1>
-          <p className="text-sm text-gray-500">Manage your rental items inventory</p>
-        </div>
-        <Link href="/dashboard/provider/gear/new">
-          <Button>
-            <PlusIcon className="mr-1 size-4" />
-            Add gear
-          </Button>
-        </Link>
-      </div>
+    <div className="w-full">
+      <PageHeader
+        title="My Gear"
+        description="Manage your rental items inventory"
+        action={
+          <Link href="/dashboard/provider/gear/new">
+            <Button>
+              <PlusIcon className="mr-1 size-4" />
+              Add Gear
+            </Button>
+          </Link>
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-14 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="h-14 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : gear && gear.length > 0 ? (
-        <div className="rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
@@ -78,7 +80,7 @@ export default function ProviderGearPage() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.brand}</TableCell>
                   <TableCell>{item.category?.name ?? "—"}</TableCell>
-                  <TableCell>${item.price.toFixed(2)}</TableCell>
+                  <TableCell className="font-mono">${item.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
@@ -101,7 +103,7 @@ export default function ProviderGearPage() {
                         size="sm"
                         onClick={() => setItemToDelete(item)}
                       >
-                        <TrashIcon className="size-4 text-red-500" />
+                        <TrashIcon className="size-4 text-[#8C3B2E]" />
                         <span className="sr-only">Delete</span>
                       </Button>
                     </div>
@@ -110,24 +112,28 @@ export default function ProviderGearPage() {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       ) : (
-        <div className="rounded-lg border p-8 text-center text-gray-500">
-          No gear listed yet. Click "Add gear" above to list your first item.
+        <div className="border border-[#4E5D5A]/20 py-12 text-center text-[#4E5D5A]">
+          No gear listed yet. Click &ldquo;Add Gear&rdquo; above to list your first item.
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
-      <Dialog open={!!itemToDelete} onOpenChange={(open) => !open && setItemToDelete(null)}>
-        <DialogContent>
+      <Dialog
+        open={!!itemToDelete}
+        onOpenChange={(open) => !open && setItemToDelete(null)}
+      >
+        <DialogContent className="rounded-none border-[#4E5D5A]/30 bg-[#EDEAE0] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Delete gear</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-display text-xl text-[#20291F]">
+              Delete Gear
+            </DialogTitle>
+            <DialogDescription className="text-[#4E5D5A]">
               Are you sure you want to delete &ldquo;{itemToDelete?.name}&rdquo;?
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex gap-2 sm:justify-end">
+          <DialogFooter className="flex gap-2 border-0 bg-transparent p-0 sm:justify-end">
             <Button
               variant="outline"
               onClick={() => setItemToDelete(null)}

@@ -7,7 +7,7 @@ import { loginSchema, LoginFormValues } from "@/lib/validators/auth";
 import { useLogin } from "@/lib/queries/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField, formInputClass } from "@/components/shared/FormField";
 
 export default function LoginPage() {
   const { mutate, isPending } = useLogin();
@@ -24,58 +24,45 @@ export default function LoginPage() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <form
         onSubmit={handleSubmit((values) => mutate(values))}
-        className="w-full max-w-sm flex flex-col gap-5 border-y border-[#4E5D5A]/20 py-8"
+        className="flex w-full max-w-sm flex-col gap-5 border-y border-[#4E5D5A]/20 py-8"
       >
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-[#20291F]">
             LOG IN
           </h1>
-          <p className="text-xs font-mono text-[#4E5D5A] mt-1">
+          <p className="mt-1 font-mono text-xs text-[#4E5D5A]">
             Access your GearUp account
           </p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Email Address
-          </Label>
+        <FormField label="Email Address" error={errors.email?.message}>
           <Input
             {...register("email")}
             type="email"
             placeholder="you@example.com"
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+            className={formInputClass}
           />
-          {errors.email && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.email.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Password
-          </Label>
+        <FormField label="Password" error={errors.password?.message}>
           <Input
             {...register("password")}
             type="password"
             placeholder="••••••••"
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+            className={formInputClass}
           />
-          {errors.password && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.password.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="mt-2"
-        >
+        <Button type="submit" disabled={isPending} className="mt-2 w-full">
           {isPending ? "Logging in..." : "Log In"}
         </Button>
 
-        <p className="text-center text-xs text-[#4E5D5A] mt-2">
+        <p className="mt-2 text-center text-xs text-[#4E5D5A]">
           Don&apos;t have an account?{" "}
-          <Link href="/auth/register" className="font-semibold text-[#2F4A34] hover:underline">
+          <Link
+            href="/auth/register"
+            className="font-semibold text-[#2F4A34] hover:underline"
+          >
             Register here
           </Link>
         </p>

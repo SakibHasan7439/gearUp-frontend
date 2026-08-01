@@ -2,6 +2,8 @@
 
 import { useProviderOrders, useUpdateOrderStatus } from "@/lib/queries/provider";
 import StatusBadge from "@/components/shared/StatusBadge";
+import PageHeader from "@/components/shared/PageHeader";
+import TableWrapper from "@/components/shared/TableWrapper";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,29 +27,25 @@ export default function ProviderOrdersPage() {
   const { data: orders, isLoading } = useProviderOrders();
   const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-5xl px-4 py-10">
-        <div className="mb-6 h-8 w-48 animate-pulse rounded bg-gray-200" />
+  return (
+    <div className="w-full">
+      <PageHeader
+        title="Incoming Orders"
+        description="Manage and update order statuses"
+      />
+
+      {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="h-12 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-bold">Incoming Orders</h1>
-
-      {orders && orders.length === 0 ? (
-        <div className="rounded-lg border p-8 text-center text-gray-500">
+      ) : orders && orders.length === 0 ? (
+        <div className="border border-[#4E5D5A]/20 py-12 text-center text-[#4E5D5A]">
           No orders received yet.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
@@ -67,11 +65,11 @@ export default function ProviderOrdersPage() {
                     <TableCell className="font-mono text-xs font-medium">
                       #{order.id.slice(0, 8)}
                     </TableCell>
-                    <TableCell className="text-sm font-mono text-gray-600">
+                    <TableCell className="font-mono text-xs text-[#4E5D5A]">
                       {order.customerId.slice(0, 8)}…
                     </TableCell>
                     <TableCell>{order.items?.length ?? 0}</TableCell>
-                    <TableCell className="font-semibold">
+                    <TableCell className="font-mono font-semibold">
                       ${order.totalAmount.toFixed(2)}
                     </TableCell>
                     <TableCell>
@@ -98,7 +96,7 @@ export default function ProviderOrdersPage() {
               })}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       )}
     </div>
   );

@@ -18,7 +18,7 @@ export default function NewGearPage() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
+    <div className="w-full">
       <GearForm
         title="Add New Gear"
         submitLabel="Create Gear"

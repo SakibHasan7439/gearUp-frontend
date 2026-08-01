@@ -3,6 +3,7 @@
 import { useMyGear, useProviderOrders } from "@/lib/queries/provider";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/shared/PageHeader";
 
 export default function ProviderDashboardPage() {
   const { data: gear, isLoading: isLoadingGear } = useMyGear();
@@ -19,57 +20,55 @@ export default function ProviderDashboardPage() {
   const isLoading = isLoadingGear || isLoadingOrders;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight text-[#20291F]">
-            PROVIDER DASHBOARD
-          </h1>
-          <p className="text-sm text-[#4E5D5A]">
-            Manage your equipment inventory and order operations
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/provider/gear/new">
-            <Button size="sm">Add Gear</Button>
-          </Link>
-          <Link href="/dashboard/provider/orders">
-            <Button size="sm" variant="outline">View Orders</Button>
-          </Link>
-        </div>
-      </div>
+    <div className="w-full">
+      <PageHeader
+        title="Provider Dashboard"
+        description="Manage your equipment inventory and order operations"
+        action={
+          <>
+            <Link href="/dashboard/provider/gear/new">
+              <Button size="sm">Add Gear</Button>
+            </Link>
+            <Link href="/dashboard/provider/orders">
+              <Button size="sm" variant="outline">
+                View Orders
+              </Button>
+            </Link>
+          </>
+        }
+      />
 
       {isLoading ? (
-        <div className="grid gap-6 sm:grid-cols-3 py-8 border-y border-[#4E5D5A]/20">
+        <div className="grid gap-6 border-y border-[#4E5D5A]/20 py-8 sm:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="h-20 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-3 py-8 border-y border-[#4E5D5A]/20">
+        <div className="grid gap-8 border-y border-[#4E5D5A]/20 py-8 sm:grid-cols-3">
           <div>
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+            <span className="block font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A]">
               Total Gear Listed
             </span>
-            <p className="font-display text-4xl font-bold text-[#20291F] mt-1 font-mono">
+            <p className="mt-1 font-display text-4xl font-bold font-mono text-[#20291F]">
               {totalGear}
             </p>
           </div>
 
           <div>
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+            <span className="block font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A]">
               Pending Orders
             </span>
-            <p className="font-display text-4xl font-bold text-[#B8823A] mt-1 font-mono">
+            <p className="mt-1 font-display text-4xl font-bold font-mono text-[#B8823A]">
               {pendingOrders}
             </p>
           </div>
 
           <div>
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+            <span className="block font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A]">
               Active Rentals
             </span>
-            <p className="font-display text-4xl font-bold text-[#2F4A34] mt-1 font-mono">
+            <p className="mt-1 font-display text-4xl font-bold font-mono text-[#2F4A34]">
               {activeRentals}
             </p>
           </div>

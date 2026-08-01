@@ -2,6 +2,8 @@
 
 import { useAdminRentals } from "@/lib/queries/admin";
 import StatusBadge from "@/components/shared/StatusBadge";
+import PageHeader from "@/components/shared/PageHeader";
+import TableWrapper from "@/components/shared/TableWrapper";
 import {
   Table,
   TableBody,
@@ -15,20 +17,20 @@ export default function AdminRentalsPage() {
   const { data: rentals, isLoading } = useAdminRentals();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">All Rentals</h1>
-        <p className="text-sm text-gray-500">Platform-wide rental orders monitoring</p>
-      </div>
+    <div className="w-full">
+      <PageHeader
+        title="All Rentals"
+        description="Platform-wide rental orders monitoring"
+      />
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="h-12 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : rentals && rentals.length > 0 ? (
-        <div className="overflow-x-auto rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
@@ -46,26 +48,26 @@ export default function AdminRentalsPage() {
                   <TableCell className="font-mono text-xs font-medium">
                     #{order.id.slice(0, 8)}
                   </TableCell>
-                  <TableCell className="font-mono text-xs text-gray-600">
+                  <TableCell className="font-mono text-xs text-[#4E5D5A]">
                     {order.customerId.slice(0, 8)}…
                   </TableCell>
                   <TableCell>{order.items?.length ?? 0}</TableCell>
-                  <TableCell className="font-semibold">
+                  <TableCell className="font-mono font-semibold">
                     ${order.totalAmount.toFixed(2)}
                   </TableCell>
                   <TableCell>
                     <StatusBadge status={order.status} />
                   </TableCell>
-                  <TableCell className="text-xs text-gray-500">
+                  <TableCell className="text-xs text-[#4E5D5A]">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       ) : (
-        <div className="rounded-lg border p-8 text-center text-gray-500">
+        <div className="border border-[#4E5D5A]/20 py-12 text-center text-[#4E5D5A]">
           No rental orders found on the platform.
         </div>
       )}

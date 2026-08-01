@@ -12,7 +12,9 @@ import {
 import { categorySchema, CategoryFormValues } from "@/lib/validators/category";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import PageHeader from "@/components/shared/PageHeader";
+import TableWrapper from "@/components/shared/TableWrapper";
+import { FormField, formInputClass } from "@/components/shared/FormField";
 import {
   Table,
   TableBody,
@@ -83,26 +85,26 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Category Management</h1>
-          <p className="text-sm text-gray-500">Manage rental equipment categories</p>
-        </div>
-        <Button onClick={openNewCategoryDialog}>
-          <PlusIcon className="mr-1 size-4" />
-          New Category
-        </Button>
-      </div>
+    <div className="w-full">
+      <PageHeader
+        title="Category Management"
+        description="Manage rental equipment categories"
+        action={
+          <Button onClick={openNewCategoryDialog}>
+            <PlusIcon className="mr-1 size-4" />
+            New Category
+          </Button>
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="h-12 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : categories && categories.length > 0 ? (
-        <div className="rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
@@ -115,7 +117,9 @@ export default function AdminCategoriesPage() {
               {categories.map((cat) => (
                 <TableRow key={cat.id}>
                   <TableCell className="font-medium">{cat.name}</TableCell>
-                  <TableCell className="font-mono text-xs text-gray-600">{cat.slug}</TableCell>
+                  <TableCell className="font-mono text-xs text-[#4E5D5A]">
+                    {cat.slug}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button
@@ -131,7 +135,7 @@ export default function AdminCategoriesPage() {
                         size="sm"
                         onClick={() => setCategoryToDelete(cat)}
                       >
-                        <TrashIcon className="size-4 text-red-500" />
+                        <TrashIcon className="size-4 text-[#8C3B2E]" />
                         <span className="sr-only">Delete</span>
                       </Button>
                     </div>
@@ -140,37 +144,41 @@ export default function AdminCategoriesPage() {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       ) : (
-        <div className="rounded-lg border p-8 text-center text-gray-500">
-          No categories found. Click "New Category" above to create one.
+        <div className="border border-[#4E5D5A]/20 py-12 text-center text-[#4E5D5A]">
+          No categories found. Click &ldquo;New Category&rdquo; above to create one.
         </div>
       )}
 
-      {/* New / Edit Category Modal */}
-      <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
-        <DialogContent>
+      <Dialog
+        open={!!editingCategory}
+        onOpenChange={(open) => !open && setEditingCategory(null)}
+      >
+        <DialogContent className="rounded-none border-[#4E5D5A]/30 bg-[#EDEAE0] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-display text-xl text-[#20291F]">
               {editingCategory === "new" ? "New Category" : "Edit Category"}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="e.g. Camping Gear" {...register("name")} />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="slug">Slug</Label>
-              <Input id="slug" placeholder="e.g. camping-gear" {...register("slug")} />
-              {errors.slug && (
-                <p className="text-sm text-red-500">{errors.slug.message}</p>
-              )}
-            </div>
-            <DialogFooter className="flex gap-2 justify-end">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+            <FormField label="Name" htmlFor="name" error={errors.name?.message}>
+              <Input
+                id="name"
+                placeholder="e.g. Camping Gear"
+                className={formInputClass}
+                {...register("name")}
+              />
+            </FormField>
+            <FormField label="Slug" htmlFor="slug" error={errors.slug?.message}>
+              <Input
+                id="slug"
+                placeholder="e.g. camping-gear"
+                className={formInputClass}
+                {...register("slug")}
+              />
+            </FormField>
+            <DialogFooter className="mt-2 flex gap-2 border-0 bg-transparent p-0 sm:justify-end">
               <Button
                 type="button"
                 variant="outline"
@@ -187,17 +195,21 @@ export default function AdminCategoriesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Category Modal */}
-      <Dialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
-        <DialogContent>
+      <Dialog
+        open={!!categoryToDelete}
+        onOpenChange={(open) => !open && setCategoryToDelete(null)}
+      >
+        <DialogContent className="rounded-none border-[#4E5D5A]/30 bg-[#EDEAE0] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Delete Category</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-display text-xl text-[#20291F]">
+              Delete Category
+            </DialogTitle>
+            <DialogDescription className="text-[#4E5D5A]">
               Are you sure you want to delete category &ldquo;{categoryToDelete?.name}&rdquo;?
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex gap-2 justify-end">
+          <DialogFooter className="flex gap-2 border-0 bg-transparent p-0 sm:justify-end">
             <Button
               variant="outline"
               onClick={() => setCategoryToDelete(null)}

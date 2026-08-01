@@ -76,7 +76,7 @@ function TableHead({
     <th
       data-slot="table-head"
       className={cn(
-        "py-3 px-3 text-left align-middle font-sans text-xs uppercase tracking-wider text-[#4E5D5A] font-semibold whitespace-nowrap",
+        "h-11 px-4 text-left align-middle font-sans text-xs uppercase tracking-wider text-[#4E5D5A] font-semibold whitespace-nowrap bg-[#4E5D5A]/5",
         className
       )}
       {...props} />
@@ -91,7 +91,7 @@ function TableCell({
     <td
       data-slot="table-cell"
       className={cn(
-        "py-4 px-3 align-middle whitespace-nowrap text-[#20291F]",
+        "px-4 py-3.5 align-middle text-sm text-[#20291F]",
         className
       )}
       {...props} />

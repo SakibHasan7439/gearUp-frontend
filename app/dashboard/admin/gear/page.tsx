@@ -2,6 +2,8 @@
 
 import { useAdminGear } from "@/lib/queries/admin";
 import { Badge } from "@/components/ui/badge";
+import PageHeader from "@/components/shared/PageHeader";
+import TableWrapper from "@/components/shared/TableWrapper";
 import {
   Table,
   TableBody,
@@ -15,20 +17,20 @@ export default function AdminGearPage() {
   const { data: gear, isLoading } = useAdminGear();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">All Gear</h1>
-        <p className="text-sm text-gray-500">Platform-wide gear listings moderation overview</p>
-      </div>
+    <div className="w-full">
+      <PageHeader
+        title="All Gear"
+        description="Platform-wide gear listings moderation overview"
+      />
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="h-12 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : gear && gear.length > 0 ? (
-        <div className="overflow-x-auto rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
@@ -46,10 +48,10 @@ export default function AdminGearPage() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.brand}</TableCell>
                   <TableCell>{item.category?.name ?? "—"}</TableCell>
-                  <TableCell className="font-mono text-xs text-gray-600">
+                  <TableCell className="font-mono text-xs text-[#4E5D5A]">
                     {item.userId.slice(0, 8)}…
                   </TableCell>
-                  <TableCell>${item.price.toFixed(2)}</TableCell>
+                  <TableCell className="font-mono">${item.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
@@ -63,9 +65,9 @@ export default function AdminGearPage() {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       ) : (
-        <div className="rounded-lg border p-8 text-center text-gray-500">
+        <div className="border border-[#4E5D5A]/20 py-12 text-center text-[#4E5D5A]">
           No gear items found on the platform.
         </div>
       )}

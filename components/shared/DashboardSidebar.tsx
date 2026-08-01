@@ -24,6 +24,7 @@ import {
   TagsIcon,
   PlusIcon,
   LogOutIcon,
+  CompassIcon,
 } from "lucide-react";
 import { Role } from "@/types";
 
@@ -54,6 +55,18 @@ const homeByRole: Record<Role, string> = {
   CUSTOMER: "/dashboard/customer",
 };
 
+const roleLabels: Record<Role, string> = {
+  ADMIN: "Admin",
+  PROVIDER: "Provider",
+  CUSTOMER: "Customer",
+};
+
+const navButtonClass =
+  "flex h-10 w-full items-center gap-3 rounded-none px-3 text-sm text-[#EDEAE0] transition-colors hover:bg-[#EDEAE0]/10 hover:text-[#EDEAE0]";
+
+const navButtonActiveClass =
+  "border-l-4 border-[#B8823A] bg-[#EDEAE0]/10 font-semibold text-[#EDEAE0] pl-2";
+
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -68,14 +81,18 @@ export default function DashboardSidebar() {
     router.push("/auth/login");
   };
 
+  const isActive = (href: string) =>
+    pathname === href ||
+    (href !== "/dashboard/customer" && pathname.startsWith(href));
+
   return (
-    <Sidebar className="bg-[#2F4A34] text-[#EDEAE0] border-r border-[#4E5D5A]/20">
-      <SidebarHeader className="border-b border-[#4E5D5A]/20 p-4 bg-[#2F4A34]">
-        <SidebarMenu>
+    <Sidebar className="border-r border-[#4E5D5A]/20 bg-[#2F4A34] text-[#EDEAE0]">
+      <SidebarHeader className="border-b border-[#4E5D5A]/20 bg-[#2F4A34] p-4">
+        <SidebarMenu className="gap-0">
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg" className="hover:bg-transparent">
+            <SidebarMenuButton asChild size="lg" className="h-auto rounded-none p-0 hover:bg-transparent">
               <Link href={home} className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-none bg-[#B8823A] text-[#20291F]">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-none bg-[#B8823A] text-[#20291F]">
                   <PackageIcon className="size-5" />
                 </span>
                 <span className="font-display text-xl tracking-tight text-[#EDEAE0]">
@@ -87,31 +104,28 @@ export default function DashboardSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="bg-[#2F4A34] px-2 py-4">
-        <SidebarGroup>
-          <SidebarGroupLabel className="font-mono text-xs font-semibold uppercase tracking-wider text-[#EDEAE0]/60 px-3 mb-2">
-            {role} MENU
+      <SidebarContent className="bg-[#2F4A34] px-3 py-5">
+        <SidebarGroup className="p-0">
+          <SidebarGroupLabel className="mb-3 px-3 font-mono text-xs font-semibold uppercase tracking-wider text-[#EDEAE0]/60">
+            {roleLabels[role]} Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1.5">
               {nav.map((item) => {
                 const Icon = item.icon;
-                const active =
-                  pathname === item.href ||
-                  (item.href !== "/dashboard/customer" &&
-                    pathname.startsWith(item.href));
+                const active = isActive(item.href);
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       asChild
+                      isActive={active}
                       className={cn(
-                        "flex items-center gap-3 rounded-none px-3 py-2 text-sm text-[#EDEAE0] transition-colors hover:bg-[#EDEAE0]/10 hover:text-[#EDEAE0]",
-                        active &&
-                          "border-l-4 border-[#B8823A] bg-[#EDEAE0]/10 font-semibold text-[#EDEAE0]"
+                        navButtonClass,
+                        active && navButtonActiveClass,
                       )}
                     >
                       <Link href={item.href}>
-                        <Icon className="size-4 text-[#B8823A]" />
+                        <Icon className="size-4 shrink-0 text-[#B8823A]" />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -123,22 +137,25 @@ export default function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-[#4E5D5A]/20 p-4 bg-[#2F4A34]">
-        <SidebarMenu>
+      <SidebarFooter className="border-t border-[#4E5D5A]/20 bg-[#2F4A34] p-4">
+        <SidebarMenu className="gap-1.5">
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="text-[#EDEAE0]/80 hover:bg-[#EDEAE0]/10 hover:text-[#EDEAE0]"
+              className={cn(navButtonClass, "h-10")}
             >
-              <Link href="/gear">Browse Gear</Link>
+              <Link href="/gear">
+                <CompassIcon className="size-4 shrink-0 text-[#B8823A]" />
+                <span>Browse Gear</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={handleLogout}
-              className="text-[#8C3B2E] hover:bg-[#8C3B2E]/15 hover:text-[#8C3B2E]"
+              className="flex h-10 w-full items-center gap-3 rounded-none px-3 text-sm text-[#8C3B2E] transition-colors hover:bg-[#8C3B2E]/15 hover:text-[#8C3B2E]"
             >
-              <LogOutIcon className="size-4" />
+              <LogOutIcon className="size-4 shrink-0" />
               <span>Log out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

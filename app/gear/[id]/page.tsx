@@ -212,7 +212,7 @@ export default function GearDetailPage() {
                     {"☆".repeat(5 - review.rating)}
                   </span>
                   <span className="font-mono text-xs text-[#4E5D5A]">
-                    Customer #{review.customerId.slice(0, 8)}
+                    Customer #{review?.customerId?.slice(0, 8)}
                   </span>
                 </div>
                 <p className="text-[#20291F]">{review.comment}</p>

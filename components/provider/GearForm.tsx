@@ -7,7 +7,12 @@ import { gearFormSchema, RentGearFormValues } from "@/lib/validators/gear";
 import { useCategories } from "@/lib/queries/categories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import {
+  FormField,
+  formInputClass,
+  formTextareaClass,
+} from "@/components/shared/FormField";
 import {
   Select,
   SelectContent,
@@ -69,84 +74,69 @@ export default function GearForm({
   const selectedCategoryId = watch("categoryId");
 
   return (
-    <div className="py-4">
-      <h2 className="font-display text-2xl font-bold tracking-tight text-[#20291F] mb-6">
+    <div className="w-full max-w-2xl">
+      <h2 className="mb-8 font-display text-2xl font-bold tracking-tight text-[#20291F] sm:text-3xl">
         {title}
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <div className="space-y-1.5">
-          <Label htmlFor="name" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Gear Name
-          </Label>
+        <FormField label="Gear Name" htmlFor="name" error={errors.name?.message}>
           <Input
             id="name"
             placeholder="e.g. MSR Hubba Hubba 2-Person Tent"
+            className={formInputClass}
             {...register("name")}
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
           />
-          {errors.name && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.name.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="brand" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Brand
-          </Label>
+        <FormField label="Brand" htmlFor="brand" error={errors.brand?.message}>
           <Input
             id="brand"
             placeholder="e.g. MSR"
+            className={formInputClass}
             {...register("brand")}
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
           />
-          {errors.brand && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.brand.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="price" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Daily Rate ($)
-          </Label>
+        <FormField label="Daily Rate ($)" htmlFor="price" error={errors.price?.message}>
           <Input
             id="price"
             type="number"
             step="0.01"
             placeholder="0.00"
+            className={cn(formInputClass, "font-mono")}
             {...register("price", { valueAsNumber: true })}
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent font-mono px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
           />
-          {errors.price && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.price.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="description" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
-            Description
-          </Label>
+        <FormField
+          label="Description"
+          htmlFor="description"
+          error={errors.description?.message}
+        >
           <textarea
             id="description"
             rows={4}
             placeholder="Describe features, condition, specs, and included accessories..."
+            className={formTextareaClass}
             {...register("description")}
-            className="w-full rounded-none border border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus:outline-none focus:border-[#B8823A]"
           />
-          {errors.description && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.description.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Category</Label>
+        <FormField label="Category" error={errors.categoryId?.message}>
           <Select
             value={selectedCategoryId || ""}
-            onValueChange={(val: string) => setValue("categoryId", val, { shouldValidate: true })}
+            onValueChange={(val: string) =>
+              setValue("categoryId", val, { shouldValidate: true })
+            }
           >
             <SelectTrigger className="rounded-none border-[#4E5D5A]/40 bg-transparent">
-              <SelectValue placeholder={isLoadingCategories ? "Loading categories…" : "Select category"} />
+              <SelectValue
+                placeholder={
+                  isLoadingCategories ? "Loading categories…" : "Select category"
+                }
+              />
             </SelectTrigger>
-            <SelectContent className="bg-[#EDEAE0] border border-[#4E5D5A]/30">
+            <SelectContent className="border border-[#4E5D5A]/30 bg-[#EDEAE0]">
               {categories?.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id}>
                   {cat.name}
@@ -154,26 +144,23 @@ export default function GearForm({
               ))}
             </SelectContent>
           </Select>
-          {errors.categoryId && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.categoryId.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="totalQuantity" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Total Quantity</Label>
+        <FormField
+          label="Total Quantity"
+          htmlFor="totalQuantity"
+          error={errors.totalQuantity?.message}
+        >
           <Input
             id="totalQuantity"
             type="number"
             min={1}
+            className={cn(formInputClass, "font-mono")}
             {...register("totalQuantity", { valueAsNumber: true })}
-            className="rounded-none border-[#4E5D5A]/40 bg-transparent font-mono px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
           />
-          {errors.totalQuantity && (
-            <p className="text-xs font-mono text-[#8C3B2E]">{errors.totalQuantity.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <Button type="submit" disabled={isPending} className="mt-4">
+        <Button type="submit" disabled={isPending} className="mt-2 w-full sm:w-auto">
           {isPending ? "Submitting…" : submitLabel}
         </Button>
       </form>
