@@ -3,6 +3,7 @@
 import { useMyRentals, useCreatePaymentSession } from "@/lib/queries/rentals";
 import StatusBadge from "@/components/shared/StatusBadge";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function CustomerDashboardPage() {
   const { data: rentals, isLoading } = useMyRentals();
@@ -19,10 +20,10 @@ export default function CustomerDashboardPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-10">
-        <div className="mb-6 h-8 w-48 animate-pulse rounded bg-gray-200" />
+        <div className="mb-6 h-8 w-48 animate-pulse bg-[#4E5D5A]/10" />
         <div className="space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-24 animate-pulse rounded-lg bg-gray-200" />
+            <div key={i} className="h-20 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       </div>
@@ -34,48 +35,63 @@ export default function CustomerDashboardPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-bold">My rentals</h1>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[#20291F]">
+            MY RENTALS
+          </h1>
+          <p className="text-sm text-[#4E5D5A]">Track and manage your rental orders</p>
+        </div>
+        <Link href="/gear">
+          <Button size="sm" variant="outline">Browse Gear</Button>
+        </Link>
+      </div>
 
       {rentals && rentals.length === 0 ? (
-        <p className="text-gray-500">You have no rentals yet.</p>
+        <div className="py-12 border-y border-[#4E5D5A]/20 text-center">
+          <p className="text-[#4E5D5A] mb-4">No rentals yet — browse gear to place your first rental order.</p>
+          <Link href="/gear">
+            <Button>Browse Gear</Button>
+          </Link>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div className="divide-y divide-[#4E5D5A]/20 border-y border-[#4E5D5A]/20">
           {rentals?.map((order) => (
             <div
               key={order.id}
-              className="flex items-center justify-between rounded-lg border p-4"
+              className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4"
             >
               <Link
                 href={`/rentals/${order.id}`}
-                className="flex-1"
+                className="flex-1 group"
               >
                 <div className="mb-1 flex items-center gap-3">
-                  <span className="font-medium">#{order.id.slice(0, 8)}</span>
+                  <span className="font-mono text-sm font-bold text-[#20291F] group-hover:text-[#B8823A] transition-colors">
+                    #{order.id.slice(0, 8)}
+                  </span>
                   <StatusBadge status={order.status} />
                 </div>
-                <p className="text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString()} — $
-                  {order.totalAmount.toFixed(2)}
+                <p className="font-mono text-xs text-[#4E5D5A]">
+                  Placed: {new Date(order.createdAt).toLocaleDateString()} &middot; Total: ${order.totalAmount.toFixed(2)}
                 </p>
               </Link>
 
-              <div className="flex shrink-0 gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 {hasPendingPayment(order) && order.status !== "CANCELLED" && (
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => handlePay(order.id)}
                     disabled={isPending}
-                    className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white disabled:opacity-50"
                   >
                     {isPending ? "Redirecting…" : "Pay Now"}
-                  </button>
+                  </Button>
                 )}
 
                 {order.status === "RETURNED" && (
-                  <Link
-                    href={`/rentals/${order.id}`}
-                    className="rounded bg-gray-100 px-3 py-1.5 text-sm transition-colors hover:bg-gray-200"
-                  >
-                    Leave Review
+                  <Link href={`/rentals/${order.id}`}>
+                    <Button variant="outline" size="sm">
+                      Leave Review
+                    </Button>
                   </Link>
                 )}
               </div>

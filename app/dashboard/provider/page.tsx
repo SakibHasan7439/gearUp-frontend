@@ -1,7 +1,6 @@
 "use client";
 
 import { useMyGear, useProviderOrders } from "@/lib/queries/provider";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +19,16 @@ export default function ProviderDashboardPage() {
   const isLoading = isLoadingGear || isLoadingOrders;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Provider Overview</h1>
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[#20291F]">
+            PROVIDER DASHBOARD
+          </h1>
+          <p className="text-sm text-[#4E5D5A]">
+            Manage your equipment inventory and order operations
+          </p>
+        </div>
         <div className="flex gap-2">
           <Link href="/dashboard/provider/gear/new">
             <Button size="sm">Add Gear</Button>
@@ -34,41 +40,39 @@ export default function ProviderDashboardPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-3 py-8 border-y border-[#4E5D5A]/20">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-28 animate-pulse rounded-xl bg-gray-200" />
+            <div key={i} className="h-20 animate-pulse bg-[#4E5D5A]/10" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Total Gear Listed</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{totalGear}</p>
-            </CardContent>
-          </Card>
+        <div className="grid gap-8 sm:grid-cols-3 py-8 border-y border-[#4E5D5A]/20">
+          <div>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+              Total Gear Listed
+            </span>
+            <p className="font-display text-4xl font-bold text-[#20291F] mt-1 font-mono">
+              {totalGear}
+            </p>
+          </div>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Pending Orders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-yellow-600">
-                {pendingOrders}
-              </p>
-            </CardContent>
-          </Card>
+          <div>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+              Pending Orders
+            </span>
+            <p className="font-display text-4xl font-bold text-[#B8823A] mt-1 font-mono">
+              {pendingOrders}
+            </p>
+          </div>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Active Rentals</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-blue-600">{activeRentals}</p>
-            </CardContent>
-          </Card>
+          <div>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#4E5D5A] block">
+              Active Rentals
+            </span>
+            <p className="font-display text-4xl font-bold text-[#2F4A34] mt-1 font-mono">
+              {activeRentals}
+            </p>
+          </div>
         </div>
       )}
     </div>

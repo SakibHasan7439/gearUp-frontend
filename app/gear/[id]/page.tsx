@@ -9,6 +9,9 @@ import { useGearReviews } from "@/lib/queries/reviews";
 import { useCreateRental, useCreatePaymentSession } from "@/lib/queries/rentals";
 import { rentGearSchema, RentGearFormValues } from "@/lib/validators/rental";
 import { Review } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function today() {
   return new Date().toISOString().split("T")[0];
@@ -77,148 +80,147 @@ export default function GearDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-10">
-        <div className="h-8 w-64 animate-pulse rounded bg-gray-200" />
-        <div className="mt-4 h-6 w-48 animate-pulse rounded bg-gray-200" />
-        <div className="mt-6 h-32 animate-pulse rounded bg-gray-200" />
+        <div className="h-8 w-64 animate-pulse bg-[#4E5D5A]/10" />
+        <div className="mt-4 h-6 w-48 animate-pulse bg-[#4E5D5A]/10" />
+        <div className="mt-6 h-32 animate-pulse bg-[#4E5D5A]/10" />
       </div>
     );
   }
 
   if (!gear) {
     return (
-      <div className="py-20 text-center text-gray-500">Gear not found.</div>
+      <div className="py-20 text-center text-[#4E5D5A]">Gear item not found.</div>
     );
   }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-8">
-        <div className="mb-1 flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-bold">{gear.name}</h1>
+      <div className="mb-8 border-b border-[#4E5D5A]/20 pb-6">
+        <div className="mb-2 flex items-start justify-between gap-4">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[#20291F]">
+            {gear.name}
+          </h1>
           <span
-            className={`shrink-0 rounded-full px-3 py-1 text-sm font-medium ${
+            className={`shrink-0 font-mono text-xs font-semibold uppercase px-2.5 py-1 ${
               inStock
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-600"
+                ? "bg-[#2F4A34]/15 text-[#2F4A34]"
+                : "bg-[#8C3B2E]/15 text-[#8C3B2E]"
             }`}
           >
             {inStock ? `${gear.availableQuantity} available` : "Out of stock"}
           </span>
         </div>
 
-        <p className="text-lg text-gray-500">{gear.brand}</p>
-        <p className="text-xs text-gray-400">
+        <p className="text-base text-[#4E5D5A] font-medium">{gear.brand}</p>
+        <p className="font-mono text-xs text-[#4E5D5A]/80 uppercase mt-0.5">
           {gear.category?.name ?? "Uncategorized"}
         </p>
 
-        <p className="mt-3 text-2xl font-bold">
+        <p className="mt-4 font-mono text-3xl font-bold text-[#20291F]">
           ${gear.price.toFixed(2)}
-          <span className="text-base font-normal text-gray-500"> / day</span>
+          <span className="font-sans text-sm font-normal text-[#4E5D5A]"> / day</span>
         </p>
 
-        <p className="mt-4 text-gray-700">{gear.description}</p>
-
-        <p className="mt-2 text-sm text-gray-400">Provider ID: {gear.userId}</p>
+        <p className="mt-4 text-[#20291F] leading-relaxed">{gear.description}</p>
       </div>
 
       {inStock && (
-        <section className="mb-10 rounded-lg border p-6">
-          <h2 className="mb-4 text-xl font-semibold">Rent now</h2>
+        <section className="mb-12 py-6 border-b border-[#4E5D5A]/20">
+          <h2 className="font-display text-xl font-bold tracking-tight text-[#20291F] mb-4">
+            Rent Now
+          </h2>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 sm:flex-row sm:items-end"
           >
             <input type="hidden" {...register("gearItemId")} />
 
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                Start date
-              </label>
-              <input
+            <div className="space-y-1">
+              <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Start date</Label>
+              <Input
                 type="date"
                 min={today()}
                 {...register("startDate")}
-                className="w-full rounded border px-3 py-2 sm:w-auto"
+                className="w-full rounded-none border-[#4E5D5A]/40 bg-transparent font-mono text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A] sm:w-auto"
               />
               {errors.startDate && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="text-xs font-mono text-[#8C3B2E]">
                   {errors.startDate.message}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium">End date</label>
-              <input
+            <div className="space-y-1">
+              <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">End date</Label>
+              <Input
                 type="date"
                 min={today()}
                 {...register("endDate")}
-                className="w-full rounded border px-3 py-2 sm:w-auto"
+                className="w-full rounded-none border-[#4E5D5A]/40 bg-transparent font-mono text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A] sm:w-auto"
               />
               {errors.endDate && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="text-xs font-mono text-[#8C3B2E]">
                   {errors.endDate.message}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium">Quantity</label>
-              <input
+            <div className="space-y-1">
+              <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Quantity</Label>
+              <Input
                 type="number"
                 min={1}
                 max={gear.availableQuantity}
                 {...register("quantity", { valueAsNumber: true })}
-                className="w-full rounded border px-3 py-2 sm:w-20"
+                className="w-full rounded-none border-[#4E5D5A]/40 bg-transparent font-mono text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A] sm:w-24"
               />
               {errors.quantity && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="text-xs font-mono text-[#8C3B2E]">
                   {errors.quantity.message}
                 </p>
               )}
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="rounded bg-black px-6 py-2 text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+              className="px-8"
             >
-              {isSubmitting ? "Processing…" : "Rent"}
-            </button>
+              {isSubmitting ? "Processing…" : "Rent Equipment"}
+            </Button>
           </form>
 
           {watchQuantity > 0 && (
-            <p className="mt-3 text-sm text-gray-500">
-              Estimated total: $
-              {(gear.price * watchQuantity).toFixed(2)}/day
+            <p className="mt-3 font-mono text-xs text-[#4E5D5A]">
+              Estimated daily rate: ${(gear.price * watchQuantity).toFixed(2)}/day
             </p>
           )}
         </section>
       )}
 
       <section>
-        <h2 className="mb-4 text-xl font-semibold">
+        <h2 className="font-display text-xl font-bold tracking-tight text-[#20291F] mb-4">
           Reviews ({reviews?.length ?? 0})
         </h2>
         {reviews && reviews.length > 0 ? (
-          <div className="space-y-4">
+          <div className="divide-y divide-[#4E5D5A]/20 border-y border-[#4E5D5A]/20">
             {reviews.map((review: Review) => (
-              <div key={review.id} className="rounded-lg border p-4">
+              <div key={review.id} className="py-4">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="text-yellow-500">
+                  <span className="text-[#B8823A]">
                     {"★".repeat(review.rating)}
                     {"☆".repeat(5 - review.rating)}
                   </span>
-                  <span className="text-sm text-gray-400">
-                    {review.customerId}
+                  <span className="font-mono text-xs text-[#4E5D5A]">
+                    Customer #{review.customerId.slice(0, 8)}
                   </span>
                 </div>
-                <p className="text-gray-700">{review.comment}</p>
+                <p className="text-[#20291F]">{review.comment}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">No reviews yet.</p>
+          <p className="text-sm text-[#4E5D5A] border-y border-[#4E5D5A]/20 py-4">No reviews yet for this gear.</p>
         )}
       </section>
     </div>

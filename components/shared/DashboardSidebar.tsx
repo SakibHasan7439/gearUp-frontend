@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -28,7 +27,10 @@ import {
 } from "lucide-react";
 import { Role } from "@/types";
 
-const navByRole: Record<Role, { href: string; label: string; icon: typeof LayoutDashboardIcon }[]> = {
+const navByRole: Record<
+  Role,
+  { href: string; label: string; icon: typeof LayoutDashboardIcon }[]
+> = {
   ADMIN: [
     { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboardIcon },
     { href: "/dashboard/admin/categories", label: "Categories", icon: TagsIcon },
@@ -37,12 +39,12 @@ const navByRole: Record<Role, { href: string; label: string; icon: typeof Layout
   ],
   PROVIDER: [
     { href: "/dashboard/provider", label: "Overview", icon: LayoutDashboardIcon },
-    { href: "/dashboard/provider/gear", label: "My gear", icon: PackageIcon },
-    { href: "/dashboard/provider/gear/new", label: "Add gear", icon: PlusIcon },
+    { href: "/dashboard/provider/gear", label: "My Gear", icon: PackageIcon },
+    { href: "/dashboard/provider/gear/new", label: "Add Gear", icon: PlusIcon },
     { href: "/dashboard/provider/orders", label: "Orders", icon: ShoppingCartIcon },
   ],
   CUSTOMER: [
-    { href: "/dashboard/customer", label: "My rentals", icon: ShoppingCartIcon },
+    { href: "/dashboard/customer", label: "My Rentals", icon: ShoppingCartIcon },
   ],
 };
 
@@ -67,26 +69,28 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <Sidebar collapsible="offcanvas">
-      <SidebarHeader>
+    <Sidebar className="bg-[#2F4A34] text-[#EDEAE0] border-r border-[#4E5D5A]/20">
+      <SidebarHeader className="border-b border-[#4E5D5A]/20 p-4 bg-[#2F4A34]">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg">
-              <Link href={home}>
-                <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                  <PackageIcon className="size-4" />
+            <SidebarMenuButton asChild size="lg" className="hover:bg-transparent">
+              <Link href={home} className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-none bg-[#B8823A] text-[#20291F]">
+                  <PackageIcon className="size-5" />
                 </span>
-                <span className="font-semibold">GearUp</span>
+                <span className="font-display text-xl tracking-tight text-[#EDEAE0]">
+                  GEARUP
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-[#2F4A34] px-2 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>
-            {role.charAt(0) + role.slice(1).toLowerCase()}
+          <SidebarGroupLabel className="font-mono text-xs font-semibold uppercase tracking-wider text-[#EDEAE0]/60 px-3 mb-2">
+            {role} MENU
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -100,11 +104,14 @@ export default function DashboardSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       asChild
-                      isActive={active}
-                      className={cn(active && "bg-sidebar-accent")}
+                      className={cn(
+                        "flex items-center gap-3 rounded-none px-3 py-2 text-sm text-[#EDEAE0] transition-colors hover:bg-[#EDEAE0]/10 hover:text-[#EDEAE0]",
+                        active &&
+                          "border-l-4 border-[#B8823A] bg-[#EDEAE0]/10 font-semibold text-[#EDEAE0]"
+                      )}
                     >
                       <Link href={item.href}>
-                        <Icon />
+                        <Icon className="size-4 text-[#B8823A]" />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -116,19 +123,22 @@ export default function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-[#4E5D5A]/20 p-4 bg-[#2F4A34]">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/gear">Browse gear</Link>
+            <SidebarMenuButton
+              asChild
+              className="text-[#EDEAE0]/80 hover:bg-[#EDEAE0]/10 hover:text-[#EDEAE0]"
+            >
+              <Link href="/gear">Browse Gear</Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={handleLogout}
-              className="text-red-500 hover:bg-red-50"
+              className="text-[#8C3B2E] hover:bg-[#8C3B2E]/15 hover:text-[#8C3B2E]"
             >
-              <LogOutIcon />
+              <LogOutIcon className="size-4" />
               <span>Log out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GearFormProps {
   defaultValues?: Partial<RentGearFormValues>;
@@ -29,7 +28,7 @@ export default function GearForm({
   defaultValues,
   onSubmit,
   isPending = false,
-  submitLabel = "Save gear",
+  submitLabel = "Save Gear",
   title,
 }: GearFormProps) {
   const { data: categories, isLoading: isLoadingCategories } = useCategories();
@@ -70,96 +69,114 @@ export default function GearForm({
   const selectedCategoryId = watch("categoryId");
 
   return (
-    <Card className="mx-auto max-w-xl">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="space-y-1">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="e.g. Sony Alpha a7 IV" {...register("name")} />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
+    <div className="py-4">
+      <h2 className="font-display text-2xl font-bold tracking-tight text-[#20291F] mb-6">
+        {title}
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <div className="space-y-1.5">
+          <Label htmlFor="name" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
+            Gear Name
+          </Label>
+          <Input
+            id="name"
+            placeholder="e.g. MSR Hubba Hubba 2-Person Tent"
+            {...register("name")}
+            className="rounded-none border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+          />
+          {errors.name && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.name.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="brand">Brand</Label>
-            <Input id="brand" placeholder="e.g. Sony" {...register("brand")} />
-            {errors.brand && (
-              <p className="text-sm text-red-500">{errors.brand.message}</p>
-            )}
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="brand" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
+            Brand
+          </Label>
+          <Input
+            id="brand"
+            placeholder="e.g. MSR"
+            {...register("brand")}
+            className="rounded-none border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+          />
+          {errors.brand && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.brand.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="price">Price per day ($)</Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              {...register("price", { valueAsNumber: true })}
-            />
-            {errors.price && (
-              <p className="text-sm text-red-500">{errors.price.message}</p>
-            )}
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="price" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
+            Daily Rate ($)
+          </Label>
+          <Input
+            id="price"
+            type="number"
+            step="0.01"
+            placeholder="0.00"
+            {...register("price", { valueAsNumber: true })}
+            className="rounded-none border-[#4E5D5A]/40 bg-transparent font-mono px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+          />
+          {errors.price && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.price.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="description">Description</Label>
-            <textarea
-              id="description"
-              rows={4}
-              placeholder="Provide details about condition, included accessories, etc."
-              {...register("description")}
-              className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-            {errors.description && (
-              <p className="text-sm text-red-500">{errors.description.message}</p>
-            )}
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="description" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">
+            Description
+          </Label>
+          <textarea
+            id="description"
+            rows={4}
+            placeholder="Describe features, condition, specs, and included accessories..."
+            {...register("description")}
+            className="w-full rounded-none border border-[#4E5D5A]/40 bg-transparent px-3 py-2 text-sm text-[#20291F] focus:outline-none focus:border-[#B8823A]"
+          />
+          {errors.description && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.description.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <Label>Category</Label>
-            <Select
-              value={selectedCategoryId || ""}
-              onValueChange={(val: string) => setValue("categoryId", val, { shouldValidate: true })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={isLoadingCategories ? "Loading categories…" : "Select category"} />
-              </SelectTrigger>
-              <SelectContent>
-                {categories?.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.categoryId && (
-              <p className="text-sm text-red-500">{errors.categoryId.message}</p>
-            )}
-          </div>
+        <div className="space-y-1.5">
+          <Label className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Category</Label>
+          <Select
+            value={selectedCategoryId || ""}
+            onValueChange={(val: string) => setValue("categoryId", val, { shouldValidate: true })}
+          >
+            <SelectTrigger className="rounded-none border-[#4E5D5A]/40 bg-transparent">
+              <SelectValue placeholder={isLoadingCategories ? "Loading categories…" : "Select category"} />
+            </SelectTrigger>
+            <SelectContent className="bg-[#EDEAE0] border border-[#4E5D5A]/30">
+              {categories?.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.categoryId && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.categoryId.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="totalQuantity">Total quantity</Label>
-            <Input
-              id="totalQuantity"
-              type="number"
-              min={1}
-              {...register("totalQuantity", { valueAsNumber: true })}
-            />
-            {errors.totalQuantity && (
-              <p className="text-sm text-red-500">{errors.totalQuantity.message}</p>
-            )}
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="totalQuantity" className="font-sans text-xs uppercase tracking-wider text-[#4E5D5A]">Total Quantity</Label>
+          <Input
+            id="totalQuantity"
+            type="number"
+            min={1}
+            {...register("totalQuantity", { valueAsNumber: true })}
+            className="rounded-none border-[#4E5D5A]/40 bg-transparent font-mono px-3 py-2 text-sm text-[#20291F] focus-visible:ring-0 focus-visible:border-[#B8823A]"
+          />
+          {errors.totalQuantity && (
+            <p className="text-xs font-mono text-[#8C3B2E]">{errors.totalQuantity.message}</p>
+          )}
+        </div>
 
-          <Button type="submit" disabled={isPending} className="mt-2">
-            {isPending ? "Submitting…" : submitLabel}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button type="submit" disabled={isPending} className="mt-4">
+          {isPending ? "Submitting…" : submitLabel}
+        </Button>
+      </form>
+    </div>
   );
 }

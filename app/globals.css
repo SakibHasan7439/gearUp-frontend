@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg: #EDEAE0;
+    --ink: #20291F;
+    --primary: #2F4A34;
+    --accent: #B8823A;
+    --slate: #4E5D5A;
+    --danger: #8C3B2E;
+    --slate-20: rgba(78, 93, 90, 0.2);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-space), system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  .font-mono, code, pre {
+    font-family: var(--font-mono), monospace;
+  }
+}
+
+/* Custom focus ring styling for accessible keyboard focus */
+*:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
+}
