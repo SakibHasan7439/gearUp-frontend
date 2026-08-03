@@ -10,7 +10,7 @@ export function useAdminCategories() {
   return useQuery({
     queryKey: ["admin", "categories"],
     queryFn: async () => {
-      const { data } = await apiClient.get("/admin/categories");
+      const { data } = await apiClient.get("/categories");
       return data.data as Category[];
     },
   });

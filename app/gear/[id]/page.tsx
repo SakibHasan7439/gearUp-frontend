@@ -65,18 +65,11 @@ export default function GearDetailPage() {
       },
       {
         onSuccess: (order) => {
-          pay(order.id, {
-            onSuccess: (data) => {
-              window.location.href = data.paymentUrl;
-            },
-            onError: () => {
-              router.push(`/rentals/${order.id}`);
-            },
-          });
+          router.push(`/rentals/${order.id}`);
         },
       },
     );
-  };
+};
 
   if (isLoading) {
     return (
