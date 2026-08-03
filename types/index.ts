@@ -69,6 +69,7 @@ export interface Payment {
 }
 
 export interface Review {
+  customer: any;
   id: string;
   customerId: string;
   gearItemId: string;

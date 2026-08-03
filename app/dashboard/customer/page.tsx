@@ -30,7 +30,7 @@ export default function CustomerDashboardPage() {
 
   const hasPendingPayment = (
     order: NonNullable<typeof rentals>[number],
-  ) => !order.payments?.some((p) => p.status === "COMPLETED");
+  ) => !order.payments?.some((p) => p.status === "CONFIRMED");
 
   return (
     <div className="w-full">

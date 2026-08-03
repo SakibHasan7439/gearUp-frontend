@@ -27,7 +27,7 @@ export function useCreateReview() {
 
   return useMutation({
     mutationFn: async (payload: CreateReviewPayload) => {
-      const { data } = await apiClient.post(`/gear/${payload.gearItemId}/reviews`, payload);
+      const { data } = await apiClient.post(`/review`, payload);
       return data.data as Review;
     },
 

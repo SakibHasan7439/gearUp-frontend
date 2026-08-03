@@ -9,6 +9,13 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <Link
+        href="/auth/register"
+        className="fixed right-4 top-4 z-50 rounded border border-black bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-black hover:text-white"
+      >
+        Register
+      </Link>
+
       <section className="mb-10 text-center">
         <h1 className="mb-2 text-4xl font-bold">Rent the gear you need</h1>
         <p className="mb-6 text-gray-500">

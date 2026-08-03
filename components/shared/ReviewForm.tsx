@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewSchema, ReviewFormValues } from "@/lib/validators/review";
 import { useCreateReview } from "@/lib/queries/reviews";
@@ -27,12 +28,14 @@ export default function ReviewForm({
     watch,
     formState: { errors },
   } = useForm<ReviewFormValues>({
-    resolver: zodResolver(reviewSchema),
+    resolver: zodResolver(reviewSchema) as unknown as Resolver<ReviewFormValues>,
   });
 
   const selectedRating = watch("rating");
+  console.log("selectedRating", selectedRating)
 
   const onSubmit = (values: ReviewFormValues) => {
+    console.log('values :>> ', values);
     mutate(
       { gearItemId, ...values },
       {

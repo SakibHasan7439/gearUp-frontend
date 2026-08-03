@@ -5,12 +5,12 @@ import { useRentalOrder } from "@/lib/queries/rentals";
 import StatusBadge from "@/components/shared/StatusBadge";
 import ReviewForm from "@/components/shared/ReviewForm";
 import { Payment } from "@/types";
-import { useCreatePaymentSession } from "@/lib/queries/rentals";
+import { useCreatePayment } from "@/lib/queries/payment";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: order, isLoading } = useRentalOrder(id);
-  const { mutate: pay, isPending } = useCreatePaymentSession();
+  const { mutate: pay, isPending } = useCreatePayment();
 
   if (isLoading) {
     return (
@@ -32,7 +32,7 @@ export default function OrderDetailPage() {
   }
 
   const completedPayment = order.payments?.find(
-    (p: Payment) => p.status === "COMPLETED",
+    (p: Payment) => p.status === "CONFIRMED",
   );
 
   return (
@@ -73,7 +73,7 @@ export default function OrderDetailPage() {
           onClick={() =>
             pay(order.id, {
               onSuccess: (data) => {
-                window.location.href = data.url;
+                window.location.href = data.paymentUrl;
               },
             })
           }

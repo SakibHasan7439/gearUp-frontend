@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const reviewSchema = z.object({
-  rating: z
+  rating: z.coerce
     .number({ message: "Rating is required" })
     .int()
     .min(1, "Rating must be at least 1")

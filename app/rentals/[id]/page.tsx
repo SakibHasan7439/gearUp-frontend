@@ -49,7 +49,7 @@ export default function RentalDetailPage() {
 
   console.log(order)
 
-  const completedPayment = order.status === "CONFIRMED";
+  const completedPayment = order.status === "CONFIRMED" || order.status === "RETURNED" || order.status === "CANCELLED";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">

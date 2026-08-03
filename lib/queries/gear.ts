@@ -29,15 +29,3 @@ export function useGearItem(id: string) {
     enabled: !!id,
   })
 }
-
-
-export function useGearReviews(gearItemId: string) {
-  return useQuery({
-    queryKey: ["gear", gearItemId, "reviews"],
-    queryFn: async () => {
-      const { data } = await apiClient.get(`/gear/${gearItemId}/reviews`);
-      return data.data as Review[];
-    },
-    enabled: !!gearItemId,
-  })
-}

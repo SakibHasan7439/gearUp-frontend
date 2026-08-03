@@ -23,7 +23,7 @@ export default function GearDetailPage() {
   const router = useRouter();
   const { data: gear, isLoading } = useGearItem(id);
   const { data: reviews } = useGearReviews(id);
-
+  console.log("reviews :>> ", reviews);
   const { mutate: createRental, isPending: isCreating } = useCreateRental();
   const { mutate: pay, isPending } = useCreatePayment();
 
@@ -213,7 +213,7 @@ export default function GearDetailPage() {
                     {"☆".repeat(5 - review.rating)}
                   </span>
                   <span className="font-mono text-xs text-[#4E5D5A]">
-                    Customer #{review?.customerId?.slice(0, 8)}
+                    Customer #{review?.customer?.name}
                   </span>
                 </div>
                 <p className="text-[#20291F]">{review.comment}</p>
