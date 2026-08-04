@@ -27,6 +27,7 @@ import {
   CompassIcon,
 } from "lucide-react";
 import { Role } from "@/types";
+import { apiClient } from "@/lib/api-client";
 
 const navByRole: Record<
   Role,
@@ -76,9 +77,15 @@ export default function DashboardSidebar() {
   const nav = navByRole[role] ?? navByRole.CUSTOMER;
   const home = homeByRole[role] ?? homeByRole.CUSTOMER;
 
-  const handleLogout = () => {
-    logout();
-    router.push("/auth/login");
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch {
+      
+    } finally {
+      logout();
+      router.push("/auth/login");
+    }
   };
 
   const isActive = (href: string) =>
