@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useMyRentals } from "@/lib/queries/rentals";
 import StatusBadge from "@/components/shared/StatusBadge";
 import PageHeader from "@/components/shared/PageHeader";
 import TableWrapper from "@/components/shared/TableWrapper";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,11 +21,16 @@ import { useCreatePayment } from "@/lib/queries/payment";
 export default function CustomerDashboardPage() {
   const { data: rentals, isLoading } = useMyRentals();
   const { mutate: pay, isPending } = useCreatePayment();
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
 
   const handlePay = (rentalId: string) => {
+    setPayingOrderId(rentalId);
     pay(rentalId, {
       onSuccess: (data) => {
         window.location.href = data.paymentUrl;
+      },
+      onError: () => {
+        setPayingOrderId(null);
       },
     });
   };
@@ -70,52 +77,61 @@ export default function CustomerDashboardPage() {
                 <TableHead>Status</TableHead>
                 <TableHead>Placed</TableHead>
                 <TableHead>Total</TableHead>
-                <TableHead className="w-44 text-right">Actions</TableHead>
+                <TableHead className="w-52 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rentals?.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>
-                    <Link
-                      href={`/rentals/${order.id}`}
-                      className="font-mono text-sm font-bold text-[#20291F] hover:text-[#B8823A] transition-colors"
-                    >
-                      #{order.id.slice(0, 8)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={order.status} />
-                  </TableCell>
-                  <TableCell className="text-sm text-[#4E5D5A]">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="font-mono font-semibold">
-                    ${order.totalAmount.toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {
-                        order.status === "PENDING" && (
+              {rentals?.map((order) => {
+                const isThisPaying = isPending && payingOrderId === order.id;
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>
+                      <span className="font-mono text-sm font-bold text-[#20291F]">
+                        #{order.id.slice(0, 8)}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={order.status} />
+                    </TableCell>
+                    <TableCell className="text-sm text-[#4E5D5A]">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="font-mono font-semibold">
+                      ${order.totalAmount.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link href={`/rentals/${order.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="px-2"
+                            aria-label="View order details"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        {order.status === "PENDING" && (
                           <Button
                             size="sm"
                             onClick={() => handlePay(order.id)}
                             disabled={isPending}
                           >
-                            {isPending ? "Redirecting…" : "Pay Now"}
+                            {isThisPaying ? "Redirecting…" : "Pay Now"}
                           </Button>
                         )}
-                      {order.status === "RETURNED" && (
-                        <Link href={`/rentals/${order.id}`}>
-                          <Button variant="outline" size="sm">
-                            Leave Review
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        {order.status === "RETURNED" && (
+                          <Link href={`/rentals/${order.id}`}>
+                            <Button variant="outline" size="sm">
+                              Leave Review
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableWrapper>
