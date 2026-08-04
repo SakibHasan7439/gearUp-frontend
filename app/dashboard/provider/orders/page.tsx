@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useProviderOrders, useUpdateOrderStatus } from "@/lib/queries/provider";
 import StatusBadge from "@/components/shared/StatusBadge";
 import PageHeader from "@/components/shared/PageHeader";
@@ -26,6 +27,17 @@ const nextStatusAction: Partial<
 export default function ProviderOrdersPage() {
   const { data: orders, isLoading } = useProviderOrders();
   const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+
+  const handleUpdateStatus = (id: string, status: RentalStatus) => {
+    setUpdatingOrderId(id);
+    updateStatus(
+      { id, status },
+      {
+        onSettled: () => setUpdatingOrderId(null),
+      },
+    );
+  };
 
   return (
     <div className="w-full">
@@ -60,6 +72,8 @@ export default function ProviderOrdersPage() {
             <TableBody>
               {orders?.map((order) => {
                 const action = nextStatusAction[order.status];
+                const isThisUpdating =
+                  isPending && updatingOrderId === order.id;
                 return (
                   <TableRow key={order.id}>
                     <TableCell className="font-mono text-xs font-medium">
@@ -81,13 +95,10 @@ export default function ProviderOrdersPage() {
                           size="sm"
                           disabled={isPending}
                           onClick={() =>
-                            updateStatus({
-                              id: order.id,
-                              status: action.nextStatus,
-                            })
+                            handleUpdateStatus(order.id, action.nextStatus)
                           }
                         >
-                          {isPending ? "Updating…" : action.label}
+                          {isThisUpdating ? "Updating…" : action.label}
                         </Button>
                       )}
                     </TableCell>
